@@ -39,6 +39,7 @@ dependencies:
   geocoding: ^2.1.1
   http: ^1.1.0
   xml: ^6.5.0
+  scaled_list: ^2.0.0
 
 dev_dependencies:
   flutter_test:
