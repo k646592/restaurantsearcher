@@ -37,8 +37,8 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
     return await Geolocator.getCurrentPosition();
   }
 
-  _callAPI(double latitude, double longtitude, http.Client client) async {
-    var url = Uri.parse("https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=23ce9278bcfeaa64&lat=${latitude}&lng=${longtitude}&range=${isSelectedValue}");
+  _callAPI(double latitude, double longitude, http.Client client) async {
+    var url = Uri.parse("https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=23ce9278bcfeaa64&lat=${latitude}&lng=${longitude}&range=${isSelectedValue}");
     var response = await client.get(url);
     if (response.statusCode == 200) {
       String data = response.body;
@@ -60,8 +60,8 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
       appBar: AppBar(
         backgroundColor: Colors.green,
         title: const Text(
-          "Restaurant Searcher",
-          style: TextStyle(color: Colors.white),
+          "グルメコンパス",
+          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -77,6 +77,7 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
                   style: TextStyle(
                     fontSize: 17,
                     color: Colors.black45,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(width: 20),
@@ -119,13 +120,14 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
                   child: const Text(
                     "検索",
                     style: TextStyle(
-                        color: Colors.green
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
               ],
             ),
-            ScaledList(
+            (restaurants.isNotEmpty) ? ScaledList(
               itemCount: restaurants.length,
               itemColor: (index) {
                 return Colors.green;
@@ -141,7 +143,7 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (context) {
-                                  return RestaurantShow(restaurant: restaurants[index]);
+                                  return RestaurantShow(restaurant: restaurants[index], currentPosition: _currentLocation!,);
                                 }
                             ),
                           );
@@ -164,7 +166,7 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (context) {
-                                  return RestaurantShow(restaurant: restaurants[index]);
+                                  return RestaurantShow(restaurant: restaurants[index], currentPosition: _currentLocation!,);
                                 }
                             ),
                           );
@@ -183,7 +185,7 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
                           await Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (context) {
-                                  return RestaurantShow(restaurant: restaurants[index]);
+                                  return RestaurantShow(restaurant: restaurants[index], currentPosition: _currentLocation!);
                                 }
                             ),
                           );
@@ -200,6 +202,15 @@ class _RestaurantSearcherState extends State<RestaurantSearcher> {
                   ],
                 );
               },
+            ): const Center(
+               child: Text(
+                        '検索範囲内に店舗はございません。',
+                        style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
             ),
           ],
         ),

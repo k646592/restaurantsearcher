@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:restaurantsearcher/model/model.dart';
+import 'package:restaurantsearcher/restaurant/map.dart';
 import 'package:url_launcher/link.dart';
 
 class RestaurantShow extends StatefulWidget {
   final Restaurant restaurant;
-  RestaurantShow({required this.restaurant});
+  final Position currentPosition;
+  RestaurantShow({required this.restaurant, required this.currentPosition});
 
   @override
   State<RestaurantShow> createState() => _RestaurantShowState();
 }
 
 class _RestaurantShowState extends State<RestaurantShow> {
-
-
 
   @override
   void initState() {
@@ -34,9 +35,27 @@ class _RestaurantShowState extends State<RestaurantShow> {
         ),
         title: const Text(
           "店舗詳細",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) {
+                      return RestaurantMap(latitude: widget.restaurant.lat, longitude: widget.restaurant.lng, currentPosition: widget.currentPosition,);
+                    }
+                ),
+              );
+            },
+            label: const Text(
+              '店舗所在地',
+              style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+            ),
+            icon: const Icon(Icons.map,color: Colors.white,),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
