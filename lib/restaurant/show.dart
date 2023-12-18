@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurantsearcher/model/model.dart';
+import 'package:url_launcher/link.dart';
 
 class RestaurantShow extends StatefulWidget {
   final Restaurant restaurant;
@@ -10,6 +11,14 @@ class RestaurantShow extends StatefulWidget {
 }
 
 class _RestaurantShowState extends State<RestaurantShow> {
+
+
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,11 +286,20 @@ class _RestaurantShowState extends State<RestaurantShow> {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Column(
                           children: [
-                            // アイコン
-                            const Icon(
-                              Icons.link,
-                              color: Colors.green,
-                              size: 48,
+                            Link(
+                              uri: Uri.parse(widget.restaurant.urls),
+                              target: LinkTarget.self,
+                              builder: (BuildContext ctx, FollowLink? openLink) {
+                                return IconButton(
+                                  tooltip: '詳細リンクを開く',
+                                  onPressed: openLink,
+                                  icon: const Icon(
+                                    Icons.link,
+                                    color: Colors.green,
+                                    size: 48,
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 8),
                             // タイトル
@@ -292,7 +310,7 @@ class _RestaurantShowState extends State<RestaurantShow> {
                             const SizedBox(height: 8),
                             // 説明文
                             Text(
-                              'アイコンまたはテキストをクリック',
+                              'アイコンをクリック',
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.grey[700],
