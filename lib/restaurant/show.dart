@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:restaurantsearcher/model/model.dart';
@@ -15,10 +17,31 @@ class RestaurantShow extends StatefulWidget {
 
 class _RestaurantShowState extends State<RestaurantShow> {
 
+  late double distance;
+
+  double distanceBetween(
+      double latShop,
+      double lngShop,
+      double latCurrent,
+      double lngCurrent,
+      ) {
+    toRadians(double degree) => degree * pi / 180;
+    const double r = 6378137.0;
+    final double f1 = toRadians(latShop);
+    final double f2 = toRadians(latCurrent);
+    final double l1 = toRadians(lngShop);
+    final double l2 = toRadians(lngCurrent);
+    final num a = pow(sin((f2-f1) / 2), 2);
+    final double b = cos(f1) * cos(f2) * pow(sin((l2-l1) / 2), 2);
+    final double d = 2*r*asin(sqrt(a+b));
+    return d;
+  }
+
+
   @override
   void initState() {
     super.initState();
-
+    distance = distanceBetween(double.parse(widget.restaurant.lat), double.parse(widget.restaurant.lng), widget.currentPosition.latitude, widget.currentPosition.longitude);
   }
 
   @override
@@ -223,6 +246,55 @@ class _RestaurantShowState extends State<RestaurantShow> {
                             // 説明文
                             Text(
                               widget.restaurant.genre,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      margin: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.only(top: 30, bottom: 30),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 10,
+                            offset: Offset(-10, -10),
+                            color: Colors.white24,
+                          ),
+                          BoxShadow(
+                            blurRadius: 10,
+                            offset: Offset(10, 10),
+                            color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Column(
+                          children: [
+                            // アイコン
+                            const Icon(
+                              Icons.map_rounded,
+                              color: Colors.green,
+                              size: 48,
+                            ),
+                            const SizedBox(height: 8),
+                            // タイトル
+                            Text(
+                              '現在地〜店舗',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(height: 8),
+                            // 説明文
+                            Text(
+                              '約${distance.ceil()}メートル',
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.grey[700],
